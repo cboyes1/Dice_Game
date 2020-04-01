@@ -103,8 +103,6 @@ DICE_POS = DiceDisplay()
 
 def total_points(dice_list):
     print_image(dice_list)
-    counted_bool_ones = False
-    counted_bool_fives = False
     total = 0
     # Calculates the points in any given integer array
 
@@ -112,12 +110,19 @@ def total_points(dice_list):
     while counter <= len(dice_list):
         if dice_list.count(counter+1) >= 3:
             if counter == 0:
+                counter_2 = 0
+                while counter_2 < 2:
+                    counter_2 += 1
+                    dice_list.remove(1)
                 total = total + 1000
-                counted_bool_ones = True
 
             if counter == 4:
+                counter_2 = 0
+                while counter_2 < 2:
+                    counter_2 += 1
+                    dice_list.remove(5)
                 total = total + 500
-                counted_bool_fives = True
+
             else:
                 total = total + 100 * (counter+1)
                 while counter+1 in dice_list:
@@ -125,13 +130,11 @@ def total_points(dice_list):
         counter += 1
 
     while 1 in dice_list:
-        if not counted_bool_ones:
-            total = total + 100
+        total = total + 100
         dice_list.remove(1)
 
     while 5 in dice_list:
-        if not counted_bool_fives:
-            total = total + 50
+        total = total + 50
         dice_list.remove(5)
     return total
 
@@ -190,7 +193,23 @@ while not GAME_OVER:
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if KEEP_ROLLING_BUTTON.is_over(mouse_pos):
-                CURRENT_PLAYER_ONE_SCORE.modify_score(roll_again(dice_array))
+                CURR_SCORE = roll_again(dice_array)
+                if CURR_SCORE == 0:
+                    #Delete old files
+                    del KEEP_SCORE
+                    KEEP_SCORE = Button((0, 255, 0), 10000, 50, 350, 100, 'Click to keep score')
+                    del KEEP_ROLLING_BUTTON
+                    KEEP_ROLLING_BUTTON = Button((0, 255, 0), 10000, 50, 375, 100,
+                                                 'Click to keep rolling')
+
+                    #Recreate Scene
+                    pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
+                    CURRENT_PLAYER_ONE_SCORE.reset_score()
+                    score_to_screen(str(PLAYER_ONE_SCORE.get_score()), "PLAYER_ONE_SCORE")
+                    ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
+                    ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
+
+                CURRENT_PLAYER_ONE_SCORE.modify_score(CURR_SCORE)
                 score_to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()),
                                 "CURRENT_PLAYER_ONE_SCORE")
 
