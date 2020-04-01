@@ -111,14 +111,14 @@ def total_points(dice_list):
         if dice_list.count(counter+1) >= 3:
             if counter == 0:
                 counter_2 = 0
-                while counter_2 < 2:
+                while counter_2 < 3:
                     counter_2 += 1
                     dice_list.remove(1)
                 total = total + 1000
 
             if counter == 4:
                 counter_2 = 0
-                while counter_2 < 2:
+                while counter_2 < 3:
                     counter_2 += 1
                     dice_list.remove(5)
                 total = total + 500
@@ -136,6 +136,7 @@ def total_points(dice_list):
     while 5 in dice_list:
         total = total + 50
         dice_list.remove(5)
+
     return total
 
 
@@ -194,12 +195,16 @@ while not GAME_OVER:
 
             if KEEP_ROLLING_BUTTON.is_over(mouse_pos):
                 CURR_SCORE = roll_again(dice_array)
+                #print(CURR_SCORE)
+
+                CURRENT_PLAYER_ONE_SCORE.modify_score(CURR_SCORE)
+                score_to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()),
+                                "CURRENT_PLAYER_ONE_SCORE")
                 if CURR_SCORE == 0:
-                    #Delete old files
-                    del KEEP_SCORE
-                    KEEP_SCORE = Button((0, 255, 0), 10000, 50, 350, 100, 'Click to keep score')
-                    del KEEP_ROLLING_BUTTON
-                    KEEP_ROLLING_BUTTON = Button((0, 255, 0), 10000, 50, 375, 100,
+                    #print("RAN")
+                    #Delete old buttons
+                    KEEP_SCORE = Button((0, 255, 0), 10000, 10000, 350, 100, 'Click to keep score')
+                    KEEP_ROLLING_BUTTON = Button((0, 255, 0), 10000, 10000, 375, 100,
                                                  'Click to keep rolling')
 
                     #Recreate Scene
@@ -209,10 +214,6 @@ while not GAME_OVER:
                     ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                     ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
 
-                CURRENT_PLAYER_ONE_SCORE.modify_score(CURR_SCORE)
-                score_to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()),
-                                "CURRENT_PLAYER_ONE_SCORE")
-
             if KEEP_SCORE.is_over(mouse_pos):
                 pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
                 PLAYER_ONE_SCORE.modify_score(CURRENT_PLAYER_ONE_SCORE.get_score())
@@ -220,6 +221,7 @@ while not GAME_OVER:
                 score_to_screen(str(PLAYER_ONE_SCORE.get_score()), "PLAYER_ONE_SCORE")
                 ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                 ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
+
 
             if ROLL_BUTTON.is_over(mouse_pos):
                 dice_array = []
@@ -235,7 +237,6 @@ while not GAME_OVER:
 
                 if CURRENT_PLAYER_ONE_SCORE.get_score() >= 150:
                     pygame.draw.rect(SCREEN, FELT_GREEN, (140, 45, 270, 110))
-                    del ROLL_BUTTON
                     ROLL_BUTTON = Button((0, 255, 0), 150000, 50000, 250, 100, 'Click To Roll')
                     score_to_screen(str(PLAYER_ONE_SCORE.get_score()),
                                     "PLAYER_ONE_SCORE")
