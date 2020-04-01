@@ -90,8 +90,6 @@ class Button():
         return False
 
 #initialize buttons
-ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
-ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
 KEEP_ROLLING_BUTTON = Button((0, 255, 0), 10000, 50000, 375, 100, 'Click to roll again')
 KEEP_SCORE = Button((0, 255, 0), 600, 50, 350, 100, 'Click to keep score')
 #initialize scores
@@ -184,6 +182,10 @@ def roll_again(dice):
 
 
 
+START_BUTTON = Button((245, 194, 194), 450, 200, 300, 200, 'Start The Game!')
+START_BUTTON.draw(SCREEN, (0, 0, 0))
+
+
 while not GAME_OVER:
     for event in pygame.event.get():
         mouse_pos = pygame.mouse.get_pos()
@@ -192,6 +194,11 @@ while not GAME_OVER:
             sys.exit()
             GAME_OVER = True
         if event.type == pygame.MOUSEBUTTONDOWN:
+            if START_BUTTON.is_over(mouse_pos):
+                #Recreate Scene
+                pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
+                ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
+                ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
 
             if KEEP_ROLLING_BUTTON.is_over(mouse_pos):
                 CURR_SCORE = roll_again(dice_array)
@@ -221,6 +228,7 @@ while not GAME_OVER:
                 score_to_screen(str(PLAYER_ONE_SCORE.get_score()), "PLAYER_ONE_SCORE")
                 ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                 ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
+                dice_array = []
 
 
             if ROLL_BUTTON.is_over(mouse_pos):
