@@ -10,7 +10,7 @@ F_P = str(pathlib.Path(__file__).parent.absolute())
 pygame.init()
 WIDTH = 1200
 HEIGHT = 800
-FELT_GREEN = (10, 128, 30)
+FELT_GREEN = (10, 118, 30)
 
 # Set Screen Dimensions and Colour
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -117,7 +117,7 @@ def total_points(dice_list):
                     dice_list.remove(1)
                 total = total + 1000
 
-            if counter == 4:
+            elif counter == 4:
                 counter_2 = 0
                 while counter_2 < 3:
                     counter_2 += 1
@@ -126,7 +126,9 @@ def total_points(dice_list):
 
             else:
                 total = total + 100 * (counter+1)
-                while counter+1 in dice_list:
+                counter_2 = 0
+                while counter_2 < 3:
+                    counter_2 += 1
                     dice_list.remove(counter+1)
         counter += 1
 
@@ -160,13 +162,11 @@ def print_image(dice):
 def to_screen(display_msg, rect_dim):
     rect_dim_list = list(rect_dim)
     rect_center = (rect_dim_list[0] + (rect_dim_list[2]/ 2), rect_dim_list[1])
-    rect_pos = rect_dim
     score_font = pygame.font.SysFont('timesnewroman', 40)
     score_text = score_font.render(display_msg,
-                                   True, (0, 0, 0), (255, 255, 255))
+                                   True, (0, 0, 0), (199, 138, 239))
     text_rect = score_text.get_rect()
     text_rect.center = rect_center
-    pygame.draw.rect(SCREEN, FELT_GREEN, rect_pos)
     SCREEN.blit(score_text, text_rect)
 
 
@@ -175,17 +175,27 @@ def roll_again(dice):
     while r_c1 < len(dice):
         dice[r_c1] = (random.randint(1, 6))
         r_c1 += 1
+    print(dice)
     return total_points(dice)
 
 
 
 START_BUTTON = Button((245, 194, 194), 450, 200, 300, 200, 'Start The Game!')
 START_BUTTON.draw(SCREEN, (0, 0, 0))
-
+TOTAL_SCORE_PLACE = (150, 700, 100, 100)
+TOTAL_SCORE_POINTS = (375, 700, 100, 100)
+CURRENT_SCORE_PLACE = (665, 227, 100, 100)
+CURRENT_SCORE_POINTS = (860, 227, 100, 100)
 
 while not GAME_OVER:
+
     for event in pygame.event.get():
         mouse_pos = pygame.mouse.get_pos()
+
+        if PLAYER_ONE_SCORE.get_score() >= 5000:
+            pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
+            pygame.draw.rect(SCREEN, (199, 138, 239), (0, 0, 1200, 800))
+            to_screen("Congratulations! You Won!", (350, 200, 500, 800))
 
         if event.type == pygame.QUIT:
             sys.exit()
@@ -201,7 +211,8 @@ while not GAME_OVER:
             elif KEEP_ROLLING_BUTTON.is_over(mouse_pos):
                 CURR_SCORE = roll_again(dice_array)
                 CURRENT_PLAYER_ONE_SCORE.modify_score(CURR_SCORE)
-                to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), (725, 300, 100, 100))
+                to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), CURRENT_SCORE_POINTS)
+                to_screen("Current Score:", CURRENT_SCORE_PLACE)
 
                 if CURR_SCORE == 0:
                     #print("RAN")
@@ -212,7 +223,8 @@ while not GAME_OVER:
                     #Recreate Scene
                     pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
                     CURRENT_PLAYER_ONE_SCORE.reset_score()
-                    to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
+                    to_screen(str(PLAYER_ONE_SCORE.get_score()), TOTAL_SCORE_POINTS)
+                    to_screen("Total Score:", TOTAL_SCORE_PLACE)
                     ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                     ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
 
@@ -224,7 +236,8 @@ while not GAME_OVER:
                 pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
                 PLAYER_ONE_SCORE.modify_score(CURRENT_PLAYER_ONE_SCORE.get_score())
                 CURRENT_PLAYER_ONE_SCORE.reset_score()
-                to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
+                to_screen(str(PLAYER_ONE_SCORE.get_score()), TOTAL_SCORE_POINTS)
+                to_screen("Total Score:", TOTAL_SCORE_PLACE)
                 ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                 ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
                 dice_array = []
@@ -244,11 +257,14 @@ while not GAME_OVER:
                 if CURRENT_PLAYER_ONE_SCORE.get_score() >= 150:
                     pygame.draw.rect(SCREEN, FELT_GREEN, (140, 45, 270, 110))
                     ROLL_BUTTON.delete_button()
-                    to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
-                    to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), (725, 300, 100, 100))
+                    to_screen(str(PLAYER_ONE_SCORE.get_score()), TOTAL_SCORE_POINTS)
+                    to_screen("Total Score:", TOTAL_SCORE_PLACE)
+                    to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), CURRENT_SCORE_POINTS)
+                    to_screen("Current Score:", CURRENT_SCORE_PLACE)
                     KEEP_ROLLING_BUTTON = Button((0, 255, 0), 100, 50, 375, 100,
                                                  'Click to keep rolling')
                     KEEP_ROLLING_BUTTON.draw(SCREEN, (0, 0, 0))
                     KEEP_SCORE = Button((0, 255, 0), 600, 50, 350, 100, 'Click to keep score')
                     KEEP_SCORE.draw(SCREEN, (0, 0, 0))
+
     pygame.display.update()
