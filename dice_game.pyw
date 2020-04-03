@@ -156,22 +156,16 @@ def print_image(dice):
     DICE_POS.x_offset_reset()
     DICE_POS.y_offset_adjust(75)
 
-def score_to_screen(score_msg, msg):
-    y_pos = 0
-    if msg == "PLAYER_ONE_SCORE":
-        y_pos = 225
-        rect_pos = (725, 200, 100, 100)
 
-    if msg == "CURRENT_PLAYER_ONE_SCORE":
-        y_pos = 300
-        rect_pos = (725, 300, 100, 100)
-    #pygame.draw.rect(SCREEN, FELT_GREEN, (775, 225, 100, 100))
-    # create a font object to hold score
+def to_screen(display_msg, rect_dim):
+    rect_dim_list = list(rect_dim)
+    rect_center = (rect_dim_list[0] + (rect_dim_list[2]/ 2), rect_dim_list[1])
+    rect_pos = rect_dim
     score_font = pygame.font.SysFont('timesnewroman', 40)
-    score_text = score_font.render(score_msg,
+    score_text = score_font.render(display_msg,
                                    True, (0, 0, 0), (255, 255, 255))
     text_rect = score_text.get_rect()
-    text_rect.center = (775, y_pos)
+    text_rect.center = rect_center
     pygame.draw.rect(SCREEN, FELT_GREEN, rect_pos)
     SCREEN.blit(score_text, text_rect)
 
@@ -206,11 +200,9 @@ while not GAME_OVER:
 
             elif KEEP_ROLLING_BUTTON.is_over(mouse_pos):
                 CURR_SCORE = roll_again(dice_array)
-                #print(CURR_SCORE)
-                #print("Clicked Keep Rolling!")
                 CURRENT_PLAYER_ONE_SCORE.modify_score(CURR_SCORE)
-                score_to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()),
-                                "CURRENT_PLAYER_ONE_SCORE")
+                to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), (725, 300, 100, 100))
+
                 if CURR_SCORE == 0:
                     #print("RAN")
                     #Delete old buttons
@@ -220,16 +212,19 @@ while not GAME_OVER:
                     #Recreate Scene
                     pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
                     CURRENT_PLAYER_ONE_SCORE.reset_score()
-                    score_to_screen(str(PLAYER_ONE_SCORE.get_score()), "PLAYER_ONE_SCORE")
+                    to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
                     ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                     ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
 
             elif KEEP_SCORE.is_over(mouse_pos):
                 #print("Keep Score!!")
+                #Delete old buttons
+                KEEP_ROLLING_BUTTON.delete_button()
+                KEEP_SCORE.delete_button()
                 pygame.draw.rect(SCREEN, FELT_GREEN, (0, 0, 1200, 800))
                 PLAYER_ONE_SCORE.modify_score(CURRENT_PLAYER_ONE_SCORE.get_score())
                 CURRENT_PLAYER_ONE_SCORE.reset_score()
-                score_to_screen(str(PLAYER_ONE_SCORE.get_score()), "PLAYER_ONE_SCORE")
+                to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
                 ROLL_BUTTON = Button((0, 255, 0), 150, 50, 250, 100, 'Click To Roll')
                 ROLL_BUTTON.draw(SCREEN, (0, 0, 0))
                 dice_array = []
@@ -238,7 +233,6 @@ while not GAME_OVER:
                 dice_array = []
                 i = 0
                 # Add dice to array
-                print("Clicked Roll Again!")
                 DICE_POS.y_offset_reset()
                 while i < 5:
                     dice_array.append((random.randint(1, 6)))
@@ -250,10 +244,8 @@ while not GAME_OVER:
                 if CURRENT_PLAYER_ONE_SCORE.get_score() >= 150:
                     pygame.draw.rect(SCREEN, FELT_GREEN, (140, 45, 270, 110))
                     ROLL_BUTTON.delete_button()
-                    score_to_screen(str(PLAYER_ONE_SCORE.get_score()),
-                                    "PLAYER_ONE_SCORE")
-                    score_to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()),
-                                    "CURRENT_PLAYER_ONE_SCORE")
+                    to_screen(str(PLAYER_ONE_SCORE.get_score()), (725, 200, 100, 100))
+                    to_screen(str(CURRENT_PLAYER_ONE_SCORE.get_score()), (725, 300, 100, 100))
                     KEEP_ROLLING_BUTTON = Button((0, 255, 0), 100, 50, 375, 100,
                                                  'Click to keep rolling')
                     KEEP_ROLLING_BUTTON.draw(SCREEN, (0, 0, 0))
