@@ -7,7 +7,7 @@ import random
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-install("pygame")
+install("pygame==1.9.6")
 
 import pygame
 
@@ -182,7 +182,6 @@ def roll_again(dice):
     while r_c1 < len(dice):
         dice[r_c1] = (random.randint(1, 6))
         r_c1 += 1
-    print(dice)
     return total_points(dice)
 
 
