@@ -1,8 +1,13 @@
+import subprocess
 import sys
 import pathlib
 import random
 import pygame
 
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+install("pygame")
 
 F_P = str(pathlib.Path(__file__).parent.absolute())
 
